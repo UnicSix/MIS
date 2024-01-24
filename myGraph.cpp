@@ -442,8 +442,6 @@ vector<int> myGraph::LeastCntG(){
       min_set.push_back(new_set);
     }
     total += count;
-    cout << "count " << count << endl;
-    cout << "vertex set" << bitset<30>(vtx_set) << endl;
     chosen=false;
     new_set=0;
     count=0;

@@ -16,7 +16,7 @@ int main()
     cout << "Graph order: ";
     cin >> order;
     myGraph g1(order);
-    g1.RandG(90);
+    g1.RandG(100);
     g1.printGraph();
     cout << endl ;
     cout << g1.ms(g1) << endl; 
