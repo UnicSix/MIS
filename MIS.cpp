@@ -19,7 +19,7 @@ int main()
     g1.RandG(100);
     g1.printGraph();
     cout << endl ;
-    cout << g1.ms(g1) << endl; 
+    cout << myGraph::ms(g1) << endl;
     return 0;
 }
 

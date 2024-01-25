@@ -34,14 +34,14 @@ class myGraph{
     bool isConnected();
     bool cmpEdge(int s1, int s2);
     int getOrder(){return order;}
-    int ms(myGraph);
-    int ms(myGraph, vector<int>);
-    int ms2(myGraph, vector<int>);
+    static int ms(myGraph);
+    static int ms(myGraph, vector<int>);
+    static int ms2(myGraph, vector<int>);
     int MinimalDegreeVertex();
     int MaxDegreeVtx();
     int GreatestNeighbourVtx(int);
-    int getGrhDeg(){return degree;}
-    int getVtxDeg(int v){return vertex_degree[v];}
+    int getGrhDeg();
+    int getVtxDeg(int v);
     vector<int> LeastCntG();
     vector<int> sortVtxSet(vector<int>);
     vector<int>N_Intersec(int, int);

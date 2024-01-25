@@ -224,24 +224,28 @@ int myGraph::ms(myGraph G){
       else            return ms(G-C)+ms(C);
     }
     if(G.degree<=1) return G.degree;
-    int A = MinimalDegreeVertex();
-    int B = GreatestNeighbourVtx(A);
-    if(G.getVtxDeg(A)==1){ return 1+ms(G-Nbar(A)); }
+    int A = G.MinimalDegreeVertex();
+    int B = G.GreatestNeighbourVtx(A);
+    if(G.getVtxDeg(A)==1){ return 1+ms(G-G.Nbar(A)); }
     else if(G.getVtxDeg(A)==2){
         int B2=0;
-        for(size_t i=0; i<adj.size(); i++){
-          if(edge(i,A)&&i!=B) B2=i;
+        for(size_t i=0; i<G.adj.size(); i++){
+          if(G.edge(i,A)&&i!=B)
+          {
+              B2=i;
+              break;
+          }
         }
-        if(edge(B,B2)) return 1+ms(G-Nbar(A));
-        return max(2+ms(G-Nbar(B)-Nbar(B2)), 1+ms2(G-Nbar(A),N2(A)));
+        if(G.edge(B,B2)) return 1+ms(G-G.Nbar(A));
+        return max(2+ms(G-G.Nbar(B)-G.Nbar(B2)), 1+ms2(G-G.Nbar(A),G.N2(A)));
     }
     else if(G.getVtxDeg(A)==3){
-        return max(ms2(G-A, N(A)), 1+ms(G-Nbar(A)));
+        return max(ms2(G-A, G.N(A)), 1+ms(G-G.Nbar(A)));
     }
-    else if(dominate(N(A), N(B))){
+    else if(dominate(G.N(A), G.N(B))){
         return ms(G-B);
     }
-    return max(ms(G-B), 1+ms(G-Nbar(B)));
+    return max(ms(G-B), 1+ms(G-G.Nbar(B)));
     return 0;
 }
 
@@ -258,31 +262,31 @@ bool myGraph::dominate(vector<int> NA, vector<int> NB){
 int myGraph::ms(myGraph G, vector<int> S){
     S = G.sortVtxSet(S);
     int s1=S[0], s2=S[1];
-    vector<int> intersec = N_Intersec(s1, s2);
+    vector<int> intersec = G.N_Intersec(s1, s2);
     if(G.vertex_degree[s1]<=1) return ms(G);
     else if(G.edge(s1,s2)){
         if(G.getVtxDeg(s1)<=3) return ms(G);
-        else return max(ms(G-Nbar(s1)), ms(G-Nbar(s2)))+1;
+        else return max(ms(G-G.Nbar(s1)), ms(G-G.Nbar(s2)))+1;
     }
     // Intersection of Ns1 and Ns2 is not empty
     else if(!intersec.empty()){
-        return 1+ms(G-N(s1)-N(s2), S);
+        return 1+ms(G-G.N(s1)-G.N(s2), S);
     }
     else if(G.getVtxDeg(s2)==2){
-        vector<int> Ns1=N(s1);
+        vector<int> Ns1=G.N(s1);
         int E=Ns1[0], F=Ns1[1];
-        if(edge(E, F)) return 1+ms(G-Nbar(s1));
-        vector<int> NF=N(F);
-        vector<int> collection=N(E);
+        if(G.edge(E, F)) return 1+ms(G-G.Nbar(s1));
+        vector<int> NF=G.N(F);
+        vector<int> collection=G.N(E);
         for(int i:NF)
           if(find(collection.begin(),collection.end(), i)!=collection.end())
             collection.push_back(i);
         vector<int>::iterator it=find(collection.begin(),collection.end(), s1);
         if(it!=collection.end()) collection.erase(it);
-        if(!dominate(N(s2),collection)) return 3+ms(G-Nbar(s1)-Nbar(s2));
-        return max(1+ms(G-Nbar(s1)), 3+ms(G-Nbar(E)-Nbar(F)-Nbar(s2)));
+        if(!dominate(G.N(s2),collection)) return 3+ms(G-G.Nbar(s1)-G.Nbar(s2));
+        return max(1+ms(G-G.Nbar(s1)), 3+ms(G-G.Nbar(E)-G.Nbar(F)-G.Nbar(s2)));
     }
-  return max(1+ms(G-Nbar(s2)), ms2(G-Nbar(s1)-s2, N(s2)))+1;
+  return max(1+ms(G-G.Nbar(s2)), ms2(G-G.Nbar(s1)-s2, G.N(s2)))+1;
 }
 
 int myGraph::ms2(myGraph G, vector<int> S){
@@ -290,37 +294,37 @@ int myGraph::ms2(myGraph G, vector<int> S){
     sort(S.begin(), S.end());
     if(sz<=1) return 0;
     else if(sz==2){
-        if(edge(S[0], S[1])) return 0;
-        else return 2+ms(G-Nbar(S[0])-Nbar(S[1]));
+        if(G.edge(S[0], S[1])) return 0;
+        else return 2+ms(G-G.Nbar(S[0])-G.Nbar(S[1]));
     }
     else if(sz==3){
-        if(vertex_degree[S[0]]==0) {
+        if(G.getVtxDeg(S[0])==0) {
             S.erase(S.begin());
             return ms(G-S[0],S);        
         }
-        else if(edge(S[0],S[1])&&edge(S[0],S[2])&&edge(S[1],S[2]))
+        else if(G.edge(S[0],S[1])&&G.edge(S[0],S[2])&&G.edge(S[1],S[2]))
             return 0;
-        else if(edge(S[0],S[1])&&edge(S[0],S[2])&&!edge(S[1],S[2]))
-            return 2+ms(G-Nbar(S[1])-Nbar(S[2]));
-        else if(edge(S[1],S[0])&&edge(S[1],S[2])&&!edge(S[0],S[2]))
-            return 2+ms(G-Nbar(S[0])-Nbar(S[2]));
-        else if(edge(S[2],S[0])&&edge(S[2],S[1])&&!edge(S[0],S[1]))
-            return 2+ms(G-Nbar(S[0])-Nbar(S[1]));
-        else if(edge(S[0],S[1])) {
-            return ms(G-Nbar(S[2]),S);
+        else if(G.edge(S[0],S[1])&&G.edge(S[0],S[2])&&!G.edge(S[1],S[2]))
+            return 2+ms(G-G.Nbar(S[1])-G.Nbar(S[2]));
+        else if(G.edge(S[1],S[0])&&G.edge(S[1],S[2])&&!G.edge(S[0],S[2]))
+            return 2+ms(G-G.Nbar(S[0])-G.Nbar(S[2]));
+        else if(G.edge(S[2],S[0])&&G.edge(S[2],S[1])&&!G.edge(S[0],S[1]))
+            return 2+ms(G-G.Nbar(S[0])-G.Nbar(S[1]));
+        else if(G.edge(S[0],S[1])) {
+            return ms(G-G.Nbar(S[2]),S);
         }
-        else if(edge(S[0],S[1])) return 1+ms(G-Nbar(S[2]),S);
-        else if(edge(S[0],S[2])) return 1+ms(G-Nbar(S[1]),S);
-        else if(edge(S[1],S[2])) return 1+ms(G-Nbar(S[0]),S);
+        else if(G.edge(S[0],S[1])) return 1+ms(G-G.Nbar(S[2]),S);
+        else if(G.edge(S[0],S[2])) return 1+ms(G-G.Nbar(S[1]),S);
+        else if(G.edge(S[1],S[2])) return 1+ms(G-G.Nbar(S[0]),S);
         //else if v belongs to the intersection of Ns1 and Ns2
-        else if(vertex_degree[S[0]]==1) {
+        else if(G.getVtxDeg(S[0])==1) {
             S.erase(S.begin());
-            return 1+ms(G-Nbar(S[0]),S);
+            return 1+ms(G-G.Nbar(S[0]),S);
         }
         else {
             int s1=S[0], s2=S[1], s3=S[2];
             S.erase(S.begin());
-            return max(1+ms(G-Nbar(s1),S), ms2(G-Nbar(s2)-Nbar(s3)-s1, N(s1)));
+            return max(1+ms(G-G.Nbar(s1),S), ms2(G-G.Nbar(s2)-G.Nbar(s3)-s1, G.N(s1)));
         }
     }
     else if(sz==4){
@@ -329,7 +333,7 @@ int myGraph::ms2(myGraph G, vector<int> S){
                 return ms(G);
             else {
                 S.erase(S.begin());
-                return max(1+ms(G-Nbar(S[0])),ms2(G-S[0],S));
+                return max(1+ms(G-G.Nbar(S[0])),ms2(G-S[0],S));
             }
         }
     }
@@ -361,7 +365,7 @@ myGraph myGraph::NbarSubG(int v){
 int myGraph::GreatestNeighbourVtx(int A){
   int greatest=0;
   for(size_t i=0; i<adj.size(); i++){
-    if(edge(A,i) && vertex_degree[i]>=greatest){
+    if(edge(A,i) && vertex_degree[i]>=greatest&&i!=A){
       greatest=i;
     }
   }
@@ -476,5 +480,14 @@ vector<int> myGraph::N2(int v){
         }
     }
     return S;
+}
+
+int myGraph::getGrhDeg()
+{
+  return degree;
+}
+int myGraph::getVtxDeg(int v)
+{
+  return vertex_degree[v];
 }
 
