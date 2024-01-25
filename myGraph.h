@@ -18,7 +18,7 @@ class myGraph{
     myGraph operator-(vector<int>);
     myGraph operator+(myGraph &other);
     myGraph& operator=(const myGraph &other);
-    myGraph VertexSetSubG(int);
+    myGraph VertexSetSubG(vector<int>);
     //create a induced subgragph with neighbours of vertex v
     myGraph NeighbourSubG(int v);  //N
     myGraph NeighbourSubG2(int v); //N2
@@ -47,6 +47,7 @@ class myGraph{
     vector<int>N_Intersec(int, int);
   
     static bool dominate(vector<int>, vector<int>);
+    static void test(myGraph);
 
   private:
     /*Variables*/
@@ -58,7 +59,7 @@ class myGraph{
     /*Functions*/
     void countVtxDeg();                         
     void countGrhDeg();
-    void DFS(int, int*);
+    void DFS(int, long long*);
 };
 
 #endif 

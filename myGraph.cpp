@@ -27,9 +27,9 @@ myGraph::myGraph(int m, int zero){
   if(zero!=0){
     throw runtime_error("invalid argument");
   }
-  order = m;
+  order = 0;
   degree = 0;
-  for(size_t i=0; i<order; i++){
+  for(size_t i=0; i<m; i++){
     adj.push_back(0);
   }
   countGrhDeg();
@@ -77,14 +77,21 @@ void myGraph::countVtxDeg(){
   int d=0;
   long long temp;
   for(size_t i=0; i<adj.size(); i++){
-      temp=adj[i];
-      while(temp!=0){
-        if((temp%2)&1) d++;
-        temp>>=1;
-      }
-    d--;
-    vertex_degree[i]=d;
-    d=0;
+    if(adj[i]!=0)
+    {
+        temp=adj[i];
+        while(temp!=0){
+          if((temp%2)&1) d++;
+          temp>>=1;
+        }
+      d--;
+      vertex_degree[i]=d;
+      d=0;
+    }
+    else
+    {
+      vertex_degree[i]=-1;
+    }
   }
 }
 
@@ -92,10 +99,13 @@ void myGraph::countGrhDeg(){
   int dg=0;
   long long cur_v;
   for(size_t i=0; i<adj.size(); i++){
-    cur_v = adj[i];
-    for(size_t j=i; j>0; j--){
-      dg+=cur_v%2&1;
-      cur_v>>=1;
+    if(adj[i]!=0)
+    {
+      cur_v = adj[i];
+      for(size_t j=i; j>0; j--){
+        dg+=cur_v%2&1;
+        cur_v>>=1;
+      }
     }
   }
   degree = dg;
@@ -216,18 +226,21 @@ vector<int> myGraph::N_Intersec(int s1, int s2){
     return intersec;
 }
 
+
+
 int myGraph::ms(myGraph G){
     if(!G.isConnected()) {
       vector<int> C_set = G.LeastCntG();
-      myGraph C = G-C_set[0];
+      myGraph C = G.VertexSetSubG(C_set);
       if(C.degree<=2) return ms(G-C)+1;
       else            return ms(G-C)+ms(C);
     }
     if(G.degree<=1) return G.degree;
     int A = G.MinimalDegreeVertex();
     int B = G.GreatestNeighbourVtx(A);
-    if(G.getVtxDeg(A)==1){ return 1+ms(G-G.Nbar(A)); }
-    else if(G.getVtxDeg(A)==2){
+    int dg = G.getVtxDeg(A);
+    if(dg==1){ return 1+ms(G-G.Nbar(A)); }
+    else if(dg==2){
         int B2=0;
         for(size_t i=0; i<G.adj.size(); i++){
           if(G.edge(i,A)&&i!=B)
@@ -239,7 +252,7 @@ int myGraph::ms(myGraph G){
         if(G.edge(B,B2)) return 1+ms(G-G.Nbar(A));
         return max(2+ms(G-G.Nbar(B)-G.Nbar(B2)), 1+ms2(G-G.Nbar(A),G.N2(A)));
     }
-    else if(G.getVtxDeg(A)==3){
+    else if(dg==3){
         return max(ms2(G-A, G.N(A)), 1+ms(G-G.Nbar(A)));
     }
     else if(dominate(G.N(A), G.N(B))){
@@ -340,6 +353,20 @@ int myGraph::ms2(myGraph G, vector<int> S){
     return ms(G);
 }
 
+myGraph myGraph::VertexSetSubG(vector<int> vset)
+{
+  vector<int> exc_set;
+  for(size_t i=0; i<adj.size(); i++)
+  {
+    vector<int>::iterator it;
+    if(find(vset.begin(), vset.end(), i)==vset.end())
+    {
+      exc_set.push_back(int(i));
+    }
+  }
+  return *this-exc_set;
+}
+
 myGraph myGraph::NbarSubG(int v){
   myGraph subGraph(adj.size());
   subGraph.adj = adj;
@@ -382,7 +409,7 @@ bool myGraph::dominate(myGraph other){
 }
 
 bool myGraph::isConnected(){
-  int visited=0;
+  long long visited=0;
   DFS(0, &visited);
   int count=0;
   // count visited vertices
@@ -413,7 +440,7 @@ int myGraph::MaxDegreeVtx(){
   return max;
 }
 
-void myGraph::DFS(int src, int* visited){
+void myGraph::DFS(int src, long long* visited){
   *visited|=1LL<<src;
   for(size_t i=0; i<adj.size(); i++){
     // if vertex i is not visited and i is connected to vertex src
@@ -425,7 +452,7 @@ void myGraph::DFS(int src, int* visited){
 
 vector<int> myGraph::LeastCntG(){
   vector<int> min_set;
-  int vtx_set=0, new_set=0;
+  long long vtx_set=0, new_set=0;
   int count=0, min_count=1, total=0;
   int src=0; bool chosen=false;
   //while(vtx_set<=pow(2,int(adj.size()))-1){
@@ -443,7 +470,7 @@ vector<int> myGraph::LeastCntG(){
 
     if(count<=min_count) {
       min_count = count;
-      min_set.push_back(new_set);
+      min_set.push_back(int(new_set));
     }
     total += count;
     chosen=false;
@@ -491,3 +518,7 @@ int myGraph::getVtxDeg(int v)
   return vertex_degree[v];
 }
 
+void myGraph::test(myGraph G)
+{
+  cout << G.getVtxDeg(2);
+}
