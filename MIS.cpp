@@ -20,8 +20,8 @@ int main()
     g1.printGraph();
     cout << endl ;
     vector<int> vset = {1,2,4};
-    g1.VertexSetSubG(vset).printGraph();
-    //cout << myGraph::ms(g1) << endl;
+    // g1.VertexSetSubG(vset).printGraph();
+    cout << myGraph::ms(g1) << endl;
     // int A = g1.MaxDegreeVtx();
     // myGraph::test(g1-g1.Nbar(A));
     return 0;
