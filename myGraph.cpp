@@ -450,32 +450,32 @@ void myGraph::DFS(int src, long long *visited){
   }
 }
 
-void myGraph::DFS(int src, int visited[], int result[]){
+void myGraph::DFS(int src, vector<int> visited, long long* vtx_set){
   visited[src]=1;
-  result[src]=1;
+  *vtx_set|=1LL<<src;
   for(size_t i=0; i<adj.size(); i++){
     // if vertex i is not visited and i is connected to vertex src
     if(visited[i]!=1 && edge(i,src)){
-      DFS(i, visited, result);
+      DFS(i, visited, vtx_set);
     }
   }
 }
 
 vector<int> myGraph::LeastCntG(){
-  vector<int> min_vtc;
-  int* vtx_set = new int[adj.size()]{0};
-  int* new_set = new int[adj.size()]{0};
-  int count=0, min_count=1, total=0;
+  vector<int> min_vtc={};
+  long long vtx_set=0;
+  int count=0, min_count=INT_MAX, total=0;
   int src=0; bool chosen=false;
-  int prev_src=src;
+  int prev_src;
   //while(vtx_set<=pow(2,int(adj.size()))-1){
   while(total < int(adj.size())){
-    DFS(src, new_set, vtx_set);
+    vector<int> new_set(adj.size(),0);
+    DFS(src, new_set, &vtx_set);
     prev_src=src;
     for(size_t i=0; i<adj.size(); i++){
       if(new_set[i]==1)
         count++;
-      else if(vtx_set[i]!=1 && !chosen){
+      if(((vtx_set>>i)%2)&0 && !chosen){
         src=i;
         chosen=true;
       }
@@ -484,18 +484,15 @@ vector<int> myGraph::LeastCntG(){
     if(count<min_count) {
       min_count = count;
       min_vtc.clear();
-      min_vtc.push_back(prev_src);
-    }
-    else if(count == min_count)
-    {
-      min_vtc.push_back(prev_src);
+      for(int i:new_set)
+      {
+        min_vtc.push_back(i);
+      }
     }
     total += count;
     chosen=false;
-    new_set=0;
     count=0;
   }
-  
   return min_vtc;
 }
 

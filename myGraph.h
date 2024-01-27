@@ -59,7 +59,7 @@ class myGraph{
     /*Functions*/
     void countVtxDeg();                         
     void countGrhDeg();
-    void DFS(int, int[], int[]);
+    void DFS(int, vector<int>, long long*);
     void DFS(int, long long*);
 };
 
