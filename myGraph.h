@@ -13,7 +13,7 @@ class myGraph{
   public:
     myGraph(int); //set graph size
     myGraph(int, int); // set graph and init all edge 0
-    myGraph operator-(myGraph &other);
+    myGraph operator-(const myGraph &other);
     myGraph operator-(int v);
     myGraph operator-(vector<int>);
     myGraph operator+(myGraph &other);
@@ -42,7 +42,8 @@ class myGraph{
     int GreatestNeighbourVtx(int);
     int getGrhDeg();
     int getVtxDeg(int v);
-    vector<int> LeastCntG();
+    int getGrhSize() const {return int(adj.size());}
+    vector<int> LeastCntG(int g_size);
     vector<int> sortVtxSet(vector<int>);
     vector<int>N_Intersec(int, int);
   
@@ -59,7 +60,7 @@ class myGraph{
     /*Functions*/
     void countVtxDeg();                         
     void countGrhDeg();
-    void DFS(int, vector<int>, long long*);
+    void DFS(int, vector<int>&, long long*);
     void DFS(int, long long*);
 };
 
