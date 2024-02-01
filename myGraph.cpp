@@ -229,7 +229,7 @@ vector<int> myGraph::N_Intersec(int s1, int s2){
 
 int myGraph::ms(myGraph G){
     if(!G.isConnected()) {
-      vector<int> C_set = G.LeastCntG(int(G.adj.size()));
+      vector<int> C_set = G.LeastCntG(int(G.order));
       // myGraph C = G.VertexSetSubG(C_set);
       myGraph C = G.VertexSetSubG(C_set);
       if(C.degree<=2) return ms(G-C_set)+1;
@@ -466,6 +466,15 @@ vector<int> myGraph::LeastCntG(int g_size){
   long long vtx_set=0;
   int count=0, min_count=INT_MAX, total=0;
   int src=0; bool chosen=false;
+  // select first exist vertex
+  for(int i=0; i<g_size; i++)
+  {
+    if(((adj[i]>>i)%2)&1)
+    {
+      src=i;
+      break;
+    }
+  }
   //while(vtx_set<=pow(2,int(adj.size()))-1){
   while(total < g_size){
     vector<int> new_set(g_size,0);

@@ -24,7 +24,7 @@ int main()
     // (g1-vset).printGraph();
     // g1.LeastCntG(g1.getGrhSize());
     // (g1-(g1-vset)).printGraph();
-    cout << myGraph::ms(g1) << endl;
+    cout << myGraph::ms(g1-0) << endl;
     // int A = g1.MaxDegreeVtx();
     // myGraph::test(g1-g1.Nbar(A));
     return 0;
