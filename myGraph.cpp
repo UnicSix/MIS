@@ -164,8 +164,9 @@ myGraph myGraph::operator-(vector<int> v){
     for(int j:v){
       new_graph.adj[i]&=~(1LL<<j);
       new_graph.adj[j]=0;
+      if(((adj[i]>>i)%2)&1 && i==j)
+        new_graph.order--;
     }
-  new_graph.order--;
   }
   new_graph.countGrhDeg();
   new_graph.countVtxDeg();
@@ -178,7 +179,7 @@ myGraph myGraph::operator-(int v){
   for(size_t i=0; i<adj.size(); i++){
     new_graph.adj[i]&=~(1LL<<v);
   }
-  order--;
+  new_graph.order--;
   new_graph.adj[v]=0;
   new_graph.countGrhDeg();
   new_graph.countVtxDeg();
@@ -229,13 +230,15 @@ vector<int> myGraph::N_Intersec(int s1, int s2){
 
 int myGraph::ms(myGraph G){
     if(!G.isConnected()) {
-      vector<int> C_set = G.LeastCntG(int(G.order));
+      int g_size=int(G.order);
+      int prnt_size=int(G.adj.size()); 
+      vector<int> C_set = G.LeastCntG(g_size, prnt_size);
       // myGraph C = G.VertexSetSubG(C_set);
       myGraph C = G.VertexSetSubG(C_set);
-      if(C.degree<=2) return ms(G-C_set)+1;
+      if(C.order<=2) return ms(G-C_set)+1;
       else            return ms(G-C_set)+ms(C);
     }
-    if(G.degree<=1) return G.degree;
+    if(G.order<=1) return int(G.order);
     int A = G.MinimalDegreeVertex();
     int B = G.GreatestNeighbourVtx(A);
     int dg = G.getVtxDeg(A);
@@ -410,7 +413,17 @@ bool myGraph::dominate(myGraph other){
 
 bool myGraph::isConnected(){
   long long visited=0;
-  DFS(0, &visited);
+  int src=-1;
+  for(size_t i=0;i<adj.size(); i++)
+  {
+    if(((adj[i]>>i)%2)&1){
+      src=i;
+      break;
+    }
+  }
+  if(src==-1) return true;
+  else DFS(src, &visited);
+
   int count=0;
   // count visited vertices
   for(size_t i=0; i<adj.size(); i++){
@@ -461,15 +474,16 @@ void myGraph::DFS(int src, vector<int> &new_set, long long* vtx_set){
   }
 }
 
-vector<int> myGraph::LeastCntG(int g_size){
+vector<int> myGraph::LeastCntG(int g_size, int prnt_size){
   vector<int> min_vtc={};
   long long vtx_set=0;
   int count=0, min_count=INT_MAX, total=0;
   int src=0; bool chosen=false;
   // select first exist vertex
-  for(int i=0; i<g_size; i++)
+  for(int i=0; i<prnt_size; i++)
   {
-    if(((adj[i]>>i)%2)&1)
+    // if(((adj[i]>>i)%2)&1)
+    if(vertex_degree[i]>-1)
     {
       src=i;
       break;

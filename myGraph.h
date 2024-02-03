@@ -34,6 +34,9 @@ class myGraph{
     bool isConnected();
     bool cmpEdge(int s1, int s2);
     int getOrder(){return order;}
+    // static int ms(myGraph&);
+    // static int ms(myGraph&, vector<int>);
+    // static int ms2(myGraph&, vector<int>);
     static int ms(myGraph);
     static int ms(myGraph, vector<int>);
     static int ms2(myGraph, vector<int>);
@@ -43,7 +46,7 @@ class myGraph{
     int getGrhDeg();
     int getVtxDeg(int v);
     int getGrhSize() const {return int(adj.size());}
-    vector<int> LeastCntG(int g_size);
+    vector<int> LeastCntG(int g_size, int prnt_size);
     vector<int> sortVtxSet(vector<int>);
     vector<int>N_Intersec(int, int);
   

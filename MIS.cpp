@@ -19,14 +19,16 @@ int main()
     //g1.RandG(100);
     g1.printGraph();
     
-    cout << endl ;
+    cout << '\n';
     // vector<int> vset=g1.LeastCntG();
     // (g1-vset).printGraph();
     // g1.LeastCntG(g1.getGrhSize());
     // (g1-(g1-vset)).printGraph();
-    cout << myGraph::ms(g1-0) << endl;
+    cout << myGraph::ms(g1-0-1) << '\n';
     // int A = g1.MaxDegreeVtx();
     // myGraph::test(g1-g1.Nbar(A));
+
+    
     return 0;
 }
 
