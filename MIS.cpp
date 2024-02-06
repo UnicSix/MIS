@@ -16,7 +16,7 @@ int main()
     cout << "Graph order: ";
     cin >> order;
     myGraph g1(order);
-    //g1.RandG(100);
+    g1.RandG(90);
     g1.printGraph();
     
     cout << '\n';
@@ -24,7 +24,7 @@ int main()
     // (g1-vset).printGraph();
     // g1.LeastCntG(g1.getGrhSize());
     // (g1-(g1-vset)).printGraph();
-    cout << myGraph::ms(g1-0-1) << '\n';
+    cout << myGraph::ms(g1) << '\n';
     // int A = g1.MaxDegreeVtx();
     // myGraph::test(g1-g1.Nbar(A));
 

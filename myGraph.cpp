@@ -491,7 +491,7 @@ vector<int> myGraph::LeastCntG(int g_size, int prnt_size){
   }
   //while(vtx_set<=pow(2,int(adj.size()))-1){
   while(total < g_size){
-    vector<int> new_set(g_size,0);
+    vector<int> new_set(prnt_size,0);
     DFS(src, new_set, &vtx_set);
     for(int i:new_set)
     {
