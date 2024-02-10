@@ -68,6 +68,17 @@ void myGraph::RandG(int cnt_rate){
   return;
 }
 
+void myGraph::CreateG(vector<long long> g) {
+    int i = 0;
+    for (long long v : g) {
+        adj[i] = v;
+		i++;
+    }
+    countGrhDeg();
+    countVtxDeg();
+    return;
+}
+
 void myGraph::printVtxDeg(){
     cout << "size: " << vertex_degree.size() << endl;
     for(int i:vertex_degree) cout << i << " ";
@@ -229,6 +240,7 @@ vector<int> myGraph::N_Intersec(int s1, int s2){
 
 
 int myGraph::ms(myGraph G){
+    if(G.getOrder()==0) return 0;
     if(!G.isConnected()) {
       int g_size=int(G.order);
       int prnt_size=int(G.adj.size()); 
@@ -236,7 +248,7 @@ int myGraph::ms(myGraph G){
       // myGraph C = G.VertexSetSubG(C_set);
       myGraph C = G.VertexSetSubG(C_set);
       if(C.order<=2) return ms(G-C_set)+1;
-      else            return ms(G-C_set)+ms(C);
+      else           return ms(G-C_set)+ms(C);
     }
     if(G.order<=1) return int(G.order);
     int A = G.MinimalDegreeVertex();
@@ -262,7 +274,6 @@ int myGraph::ms(myGraph G){
         return ms(G-B);
     }
     return max(ms(G-B), 1+ms(G-G.Nbar(B)));
-    return 0;
 }
 
 bool myGraph::dominate(vector<int> NA, vector<int> NB){
@@ -437,7 +448,7 @@ int myGraph::MinimalDegreeVertex(){
   int min=0;
   for(size_t i=0; i<order; i++){
     if(min<=vertex_degree[i]){
-      min=vertex_degree[i];
+      min=i;
     }
   }
   return min;

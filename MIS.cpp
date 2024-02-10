@@ -14,17 +14,24 @@ int main()
 {
     int order;
     cout << "Graph order: ";
-    cin >> order;
+    //cin >> order;
+    order = 5;
     myGraph g1(order);
-    g1.RandG(90);
-    g1.printGraph();
+    myGraph g2(order);
+    g2.RandG(30);
+    vector<long long> v = { 9,6,6,25,24 };
+    vector<long long> v1 = { 0,0,0,0,0 };
+    g1.CreateG(v);
     
     cout << '\n';
-    // vector<int> vset=g1.LeastCntG();
+    g2.printGraph();
+    //vector<int> vset=g1.LeastCntG(g1.getOrder(), g1.getGrhSize());
+    //for(int i: vset)
+	//	cout << i << ' ';
     // (g1-vset).printGraph();
     // g1.LeastCntG(g1.getGrhSize());
     // (g1-(g1-vset)).printGraph();
-    cout << myGraph::ms(g1) << '\n';
+    cout << myGraph::ms(g2) << '\n';
     // int A = g1.MaxDegreeVtx();
     // myGraph::test(g1-g1.Nbar(A));
 

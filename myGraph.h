@@ -27,6 +27,7 @@ class myGraph{
     vector<int> N2(int v);
     vector<int> Nbar(int v);
     void RandG(int);     //return randomized Graph
+    void CreateG(vector<long long>);    //return a graph with a given vector
     void printGraph();
     void printVtxDeg();
     bool edge(int, int); //is vertex m, n connected to each other
