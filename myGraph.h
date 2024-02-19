@@ -13,6 +13,7 @@ class myGraph{
   public:
     myGraph(int); //set graph size
     myGraph(int, int); // set graph and init all edge 0
+    myGraph(string); //set graph from string
     myGraph operator-(const myGraph &other);
     myGraph operator-(int v);
     myGraph operator-(vector<int>);

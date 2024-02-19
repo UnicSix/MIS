@@ -6,6 +6,8 @@
 #include <algorithm>
 #include <vector>
 #include <math.h>
+#include <fstream>
+#include <string>
 
 
 myGraph::myGraph(int m){
@@ -36,6 +38,38 @@ myGraph::myGraph(int m, int zero){
   countVtxDeg();
 
   return;
+}
+
+//string represents the file name of the graph
+myGraph::myGraph(string file) {
+    //open file to read strings line by line
+    ifstream graph_file;
+    graph_file.open(file);
+    if (!graph_file.is_open()) {
+	  throw runtime_error("file not found");
+	}
+    //each line represents a vertex, consisting of 0s and 1s
+    //0s represent no edge, 1s represent an edge
+    //graph consists of a list of numbers, each representing a vertex
+    //the left most bit represents the last vertex, the right most bit represents the first vertex
+    for (string line; getline(graph_file, line);) {
+		long long vertex = 0;
+        for (size_t i = 0; i < line.size(); i++) {
+            size_t j = line.size() - i - 1;
+            if (line[i] == '1') {
+				vertex |= 1LL << j;
+			}
+		}
+		adj.push_back(vertex);
+        vertex_degree.push_back(0);
+        order++;
+	}   
+     
+    countGrhDeg();
+    countVtxDeg();
+    //close file
+    graph_file.close();
+	return;
 }
 
 bool myGraph::edge(int v1, int v2){
@@ -108,13 +142,14 @@ void myGraph::countVtxDeg(){
 void myGraph::countGrhDeg(){
   int dg=0;
   long long cur_v;
-  for(size_t i=0; i<adj.size(); i++){
+  size_t sz = adj.size();
+  for(size_t i=0; i<sz; i++){
     if(adj[i]!=0)
     {
       cur_v = adj[i];
       for(size_t j=i; j>0; j--){
         dg+=cur_v%2&1;
-        cur_v>>=1;
+        cur_v>>=1LL;
       }
     }
   }
@@ -228,12 +263,16 @@ vector<int> myGraph::sortVtxSet(vector<int> S){
 }
 
 vector<int> myGraph::N_Intersec(int s1, int s2){
+    //return the intersection of N(s1) and N(s2)
     vector<int> intersec;
+    vector<int>::iterator it;
     vector<int> Ns1=N(s1);
     vector<int> Ns2=N(s2);
+    intersec.resize(min(Ns1.size(), Ns2.size()));
     sort(Ns1.begin(), Ns1.end());
     sort(Ns2.begin(), Ns2.end());
-    set_intersection(Ns1.begin(), Ns1.end(), Ns2.begin(), Ns2.end(), intersec.begin());
+    it=set_intersection(Ns1.begin(), Ns1.end(), Ns2.begin(), Ns2.end(), intersec.begin());
+    intersec.resize(it-intersec.begin());
     return intersec;
 }
 
@@ -373,105 +412,112 @@ myGraph myGraph::VertexSetSubG(vector<int> vset)
   for(size_t i=0; i<adj.size(); i++)
   {
     vector<int>::iterator it;
-    if(find(vset.begin(), vset.end(), i)==vset.end())
+    if (find(vset.begin(), vset.end(), i) == vset.end())
     {
-      exc_set.push_back(int(i));
+        exc_set.push_back(int(i));
     }
   }
-  return *this-exc_set;
+  return *this - exc_set;
 }
 
-myGraph myGraph::NbarSubG(int v){
-  myGraph subGraph(adj.size());
-  subGraph.adj = adj;
-  subGraph.order=0;
-  for(size_t i=0; i<adj.size(); i++){
-    //vertex v is connected with vertex i
-    if(!edge(v, i)){ 
-      subGraph.adj[i]=0;      
-      for(size_t j=0; j<adj.size(); j++){
-        subGraph.adj[j] &= ~(1LL<<i);
-      }
+myGraph myGraph::NbarSubG(int v) {
+    myGraph subGraph(adj.size());
+    subGraph.adj = adj;
+    subGraph.order = 0;
+    for (size_t i = 0; i < adj.size(); i++) {
+        //vertex v is connected with vertex i
+        if (!edge(v, i)) {
+            subGraph.adj[i] = 0;
+            for (size_t j = 0; j < adj.size(); j++) {
+                subGraph.adj[j] &= ~(1LL << i);
+            }
+        }
+        //else if(edge(v, i)){
+        //  subGraph.adj[i] &= ~(1LL<<v);
+        //  subGraph.order++;
+        //}
     }
-    //else if(edge(v, i)){
-    //  subGraph.adj[i] &= ~(1LL<<v);
-    //  subGraph.order++;
-    //}
-  }
-  subGraph.countGrhDeg();
-  subGraph.countVtxDeg();
-  return subGraph;
+    subGraph.countGrhDeg();
+    subGraph.countVtxDeg();
+    return subGraph;
 }
 
-int myGraph::GreatestNeighbourVtx(int A){
-  int greatest=0;
-  for(size_t i=0; i<adj.size(); i++){
-    if(edge(A,i) && vertex_degree[i]>=greatest&&i!=A){
-      greatest=i;
+int myGraph::GreatestNeighbourVtx(int A) {
+    int greatest = 0;
+    for (size_t i = 0; i < adj.size(); i++) {
+        if (edge(A, i) && vertex_degree[i] >= greatest && i != A) {
+            greatest = i;
+        }
     }
-  }
-  return greatest;
+    return greatest;
 }
 
-bool myGraph::dominate(myGraph other){
-  for(size_t i=0; i<adj.size(); i++){
-    if(adj[i]==0 && other.adj[i]!=0){
-      return false;
+bool myGraph::dominate(myGraph other) {
+    for (size_t i = 0; i < adj.size(); i++) {
+        if (adj[i] == 0 && other.adj[i] != 0) {
+            return false;
+        }
     }
-  }
-  return true;
+    return true;
 }
 
-bool myGraph::isConnected(){
-  long long visited=0;
-  int src=-1;
-  for(size_t i=0;i<adj.size(); i++)
-  {
-    if(((adj[i]>>i)%2)&1){
-      src=i;
-      break;
+bool myGraph::isConnected() {
+    long long visited = 0;
+    int src = -1;
+    for (size_t i = 0; i < adj.size(); i++)
+    {
+        if (((adj[i] >> i) % 2) & 1) {
+            src = i;
+            break;
+        }
     }
-  }
-  if(src==-1) return true;
-  else DFS(src, &visited);
+    if (src == -1) return true;
+    else DFS(src, &visited);
 
-  int count=0;
-  // count visited vertices
-  for(size_t i=0; i<adj.size(); i++){
-    if(visited%2==1) count++;
-    visited>>=1;
-  }
-  return count == int(order);
+    int count = 0;
+    // count visited vertices
+    for (size_t i = 0; i < adj.size(); i++) {
+        if (visited % 2 == 1) count++;
+        visited >>= 1;
+    }
+    return count == int(order);
 }
 
-int myGraph::MinimalDegreeVertex(){
-  int min=0;
-  for(size_t i=0; i<order; i++){
-    if(min<=vertex_degree[i]){
-      min=i;
+int myGraph::MinimalDegreeVertex() {
+    int min_v = 0;
+    for (size_t i = 0; i < adj.size(); i++) {
+        if (vertex_degree[min_v] == -1 && vertex_degree[i] != -1) {
+            min_v = i;
+        }
+        else if (vertex_degree[min_v] > vertex_degree[i] && vertex_degree[i]!=-1) {
+            min_v = i;
+        }
     }
-  }
-  return min;
+    if (vertex_degree[min_v] == -1) return -1;
+    else return min_v;
+
 }
 
-int myGraph::MaxDegreeVtx(){
-  int max=0;
-  for(size_t i=0; i<order; i++){
-    if(max>=vertex_degree[i]){
-      max=vertex_degree[i];
+int myGraph::MaxDegreeVtx() {
+    int max = 0;
+    for (size_t i = 0; i < order; i++) {
+        if (max >= vertex_degree[i]) {
+            max = vertex_degree[i];
+        }
     }
-  }
-  return max;
+    return max;
 }
 
-void myGraph::DFS(int src, long long *visited){
-  *visited|=1LL<<src;
-  for(size_t i=0; i<adj.size(); i++){
-    // if vertex i is not visited and i is connected to vertex src
-    if(!(((*visited>>i)%2)&1) && edge(i,src)){
-      DFS(i, visited);
-    }
-  }
+void myGraph::DFS(int src, long long* visited) {
+    *visited |= 1LL << src;
+    for (size_t i = 0; i < adj.size(); i++) {
+        // if vertex i is not visited and i is connected to vertex src
+        if (vertex_degree[i] != -1){
+			if(!(((*visited>>i)%2)&1) && edge(i,src)){
+			  DFS(i, visited);
+			}
+		}
+	}
 }
 
 void myGraph::DFS(int src, vector<int> &new_set, long long* vtx_set){

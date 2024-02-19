@@ -15,23 +15,28 @@ int main()
     int order;
     cout << "Graph order: ";
     //cin >> order;
-    order = 5;
+    order = 30;
+    // myGraph g1("test.txt");
     myGraph g1(order);
     myGraph g2(order);
-    g2.RandG(30);
-    vector<long long> v = { 9,6,6,25,24 };
+    g1.RandG(30);
+    vector<long long> v = { 321,646,70,328,240,48,93,914,393,642 };
     vector<long long> v1 = { 0,0,0,0,0 };
-    g1.CreateG(v);
     
     cout << '\n';
-    g2.printGraph();
+    //delete nodes except 12 ,13 ,18;
+    // g1 = g1 - 0 - 1 - 2 - 3 - 4 - 5 - 6 - 7 - 8 - 9 - 10 - 11 - 14 - 15 - 16 - 17 - 19;
+    g1.printGraph();
+    //test the result of N_intersec function. call the function and print the result
+    
+    //g2.printGraph();
     //vector<int> vset=g1.LeastCntG(g1.getOrder(), g1.getGrhSize());
     //for(int i: vset)
 	//	cout << i << ' ';
     // (g1-vset).printGraph();
     // g1.LeastCntG(g1.getGrhSize());
     // (g1-(g1-vset)).printGraph();
-    cout << myGraph::ms(g2) << '\n';
+    cout << myGraph::ms(g1) << '\n';
     // int A = g1.MaxDegreeVtx();
     // myGraph::test(g1-g1.Nbar(A));
 
