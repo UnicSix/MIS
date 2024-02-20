@@ -17,12 +17,16 @@ int main()
     //cin >> order;
     order = 30;
     // myGraph g1("test.txt");
-    myGraph g1(order);
-    myGraph g2(order);
-    g1.RandG(30);
+    myGraph g1(3);
+    // myGraph g2(order);
+    //g1.RandG(30);
     vector<long long> v = { 321,646,70,328,240,48,93,914,393,642 };
     vector<long long> v1 = { 0,0,0,0,0 };
-    
+    vector<vector<int>> v2 = {  {1,0,1},
+                                {0,0,0},
+                                {1,0,1}};
+
+    g1.CopyG(v2);
     cout << '\n';
     //delete nodes except 12 ,13 ,18;
     // g1 = g1 - 0 - 1 - 2 - 3 - 4 - 5 - 6 - 7 - 8 - 9 - 10 - 11 - 14 - 15 - 16 - 17 - 19;

@@ -29,6 +29,7 @@ class myGraph{
     vector<int> Nbar(int v);
     void RandG(int);     //return randomized Graph
     void CreateG(vector<long long>);    //return a graph with a given vector
+    void CopyG(const vector<vector<int>>&); // copy values of graph from 2d vector to a myGraph object
     void printGraph();
     void printVtxDeg();
     bool edge(int, int); //is vertex m, n connected to each other

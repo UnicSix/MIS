@@ -121,7 +121,8 @@ void myGraph::printVtxDeg(){
 void myGraph::countVtxDeg(){
   int d=0;
   long long temp;
-  for(size_t i=0; i<adj.size(); i++){
+  size_t sz=adj.size();  
+  for(size_t i=0; i<sz; i++){
     if(adj[i]!=0)
     {
         temp=adj[i];
@@ -276,7 +277,34 @@ vector<int> myGraph::N_Intersec(int s1, int s2){
     return intersec;
 }
 
-
+void myGraph::CopyG(const vector<vector<int>>& v_graph)
+{
+    //check if the size of the graph is the same as the 2d vector
+    //if not, throw an error
+    if(v_graph.size() != adj.size()) throw runtime_error("invalid argument");
+    //else, copy the values of the 2d vector to the graph
+    else
+    {
+        for(size_t i=0; i< v_graph.size(); i++)
+        {
+            adj[i]=0;
+            for(size_t j=0; j<v_graph.size(); j++)
+            {
+                if(v_graph[i][j]==1)
+                adj[i] |= 1LL<<j;
+            }
+        }
+    }
+    order=0;
+    for(auto i: adj)
+    {
+        if(i>0)
+            order++;
+    }
+    countGrhDeg();
+    countVtxDeg();
+    return;
+}
 
 int myGraph::ms(myGraph G){
     if(G.getOrder()==0) return 0;
