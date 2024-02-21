@@ -158,6 +158,7 @@
     <ClCompile Include="myGraph.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="BronKerboschreverse.h" />
     <ClInclude Include="myGraph.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
