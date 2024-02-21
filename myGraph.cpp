@@ -291,7 +291,9 @@ void myGraph::CopyG(const vector<vector<int>>& v_graph)
             for(size_t j=0; j<v_graph.size(); j++)
             {
                 if(v_graph[i][j]==1)
-                adj[i] |= 1LL<<j;
+                    adj[i] |= 1LL<<j;
+                else if(i==j)
+                    adj[i] |= 1LL<<j;
             }
         }
     }
