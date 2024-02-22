@@ -19,6 +19,7 @@ class myGraph{
     myGraph operator-(vector<int>);
     myGraph operator+(myGraph &other);
     myGraph& operator=(const myGraph &other);
+    myGraph ComplementG(); //return complement graph
     myGraph VertexSetSubG(vector<int>);
     //create a induced subgragph with neighbours of vertex v
     myGraph NeighbourSubG(int v);  //N
@@ -37,9 +38,6 @@ class myGraph{
     bool isConnected();
     bool cmpEdge(int s1, int s2);
     int getOrder(){return order;}
-    // static int ms(myGraph&);
-    // static int ms(myGraph&, vector<int>);
-    // static int ms2(myGraph&, vector<int>);
     static int ms(myGraph);
     static int ms(myGraph, vector<int>);
     static int ms2(myGraph, vector<int>);

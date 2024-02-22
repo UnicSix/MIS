@@ -8,13 +8,13 @@
 
 using namespace std;
 
-int prob = 90;	//0~100
+int prob = 20;	//0~100
 
 int main()
 {
     int order;
     //cin >> order;
-    order = 5;
+    order = 30;
     // myGraph g1("test.txt");
     myGraph g1(order);
     // myGraph g2(order);
@@ -43,7 +43,7 @@ int main()
     {
         for(auto j:i)
         {
-            cout << j << " ";
+            cout << j << "";
         }
         cout << '\n';
     }
@@ -64,20 +64,21 @@ int main()
         N.push_back(neighbor);
     }	
     //run Bron Kerbosch
-    BronKerbosch(R, P, X, N, MAXSET); 
-    bool MIS[100];
-    for(int i=0; i<100 ;i++)
-        MIS[i] = 1;
-    for (auto elem : MAXSET)
-        MIS[elem] = 0;
-    cout << endl << "Maximum Independent Set: ";
-    for(int i=0; i<order; i++)
-        if(MIS[i] != 0)
-            cout << i << " ";
+    //BronKerbosch(R, P, X, N, MAXSET); 
+    // bool MIS[100];
+    // for(int i=0; i<100 ;i++)
+        // MIS[i] = 1;
+    // for (auto elem : MAXSET)
+        // MIS[elem] = 0;
+    // cout << endl << "Maximum Independent Set: ";
+    // for(int i=0; i<order; i++)
+        // if(MIS[i] != 0)
+            // cout << i << " ";
     g1.CopyG(vg1);
     g1.printGraph();
+    g1= g1.ComplementG();
+    g1.printGraph();
     cout << myGraph::ms(g1) << '\n';
-    cout << endl << "MIS size: " << order- MAXSET.size() << endl ;
     return 0;
 }
 

@@ -308,6 +308,33 @@ void myGraph::CopyG(const vector<vector<int>>& v_graph)
     return;
 }
 
+myGraph myGraph::ComplementG(){
+  myGraph complementG(adj.size());
+  for(size_t i=0; i<adj.size(); i++)
+  {
+      for(size_t j=0; j<adj.size(); j++){
+          if(i!=j && !edge(i,j)){ //connect the vertices that are not connected
+              complementG.adj[i] |= 1LL<<j;
+          }
+          else if(i!=j && edge(i, j)) //disconnect vertices that are connected
+              {
+              complementG.adj[i] &= ~(1LL<<j); 
+              }
+      }
+  }
+  for(size_t i=0; i<adj.size(); i++)
+  {
+     if(complementG.adj[i]==(1LL<<i))
+     {
+         complementG.adj[i] = 0;
+         complementG.order--;
+     }
+  }
+  complementG.countGrhDeg();
+  complementG.countVtxDeg();
+  return complementG;
+}
+
 int myGraph::ms(myGraph G){
     if(G.getOrder()==0) return 0;
     if(!G.isConnected()) {
