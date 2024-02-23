@@ -550,7 +550,8 @@ int myGraph::MinimalDegreeVertex() {
             min_v = i;
         }
     }
-    if (vertex_degree[min_v] == -1) return -1;
+    //throw exception and terminate program if no vertex is found
+    if (vertex_degree[min_v] == -1) throw runtime_error("no vertex found");
     else return min_v;
 
 }
